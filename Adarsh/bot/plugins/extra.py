@@ -1,105 +1,291 @@
+# (c) NobiDeveloper
 from Adarsh.bot import StreamBot
-from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from Adarsh.vars import Var
+import logging
+logger = logging.getLogger(__name__)
+from Adarsh.bot.plugins.stream import MY_PASS
+from Adarsh.utils.human_readable import humanbytes
+from Adarsh.utils.database import Database
 from pyrogram import filters
-import time
-import shutil, psutil
-from utils_bot import *
-from Adarsh import StartTime
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.errors import UserNotParticipant
+from Adarsh.utils.file_properties import get_name, get_hash, get_media_file_size
+db = Database(Var.DATABASE_URL, Var.name)
+from pyrogram.types import ReplyKeyboardMarkup
 
+if MY_PASS:
+            buttonz=ReplyKeyboardMarkup(
+            [
+                ["start⚡️","help📚","login🔑","DC"],
+                ["follow❤️","ping📡","status📊","owner😎"]
+                        
+            ],
+            resize_keyboard=True
+        )
+else:
+            buttonz=ReplyKeyboardMarkup(
+            [
+                ["start⚡️","help📚","DC"],
+                ["follow❤️","ping📡","status📊","owner😎"]
+                        
+            ],
+            resize_keyboard=True
+        )
 
-START_TEXT = """ ʏᴏᴜʀ  ᴛᴇʟᴇɢʀᴀᴍ  ᴅᴄ  ɪꜱ : `{}`  """
-
-
-@StreamBot.on_message(filters.regex("owner😎"))
-async def maintainers(b,m):
-    try:
-       await b.send_message(chat_id=m.chat.id,text="HELLO",quote=True)
-    except Exception:
-                await b.send_message(
-                    chat_id=m.chat.id,
-                    text="ɪ  ᴀᴍ  ᴍᴀɪɴᴛᴀɪɴᴇᴅ  ʙʏ  [🦋🥀𝗗ᾰ𝐫𝙺𝗗èνⲓＬ🥀🦋](https://t.me/moviesworld738)",
-                    
-                    reply_markup=InlineKeyboardMarkup(
-                        [
-                            [
-                                InlineKeyboardButton("ᴅᴇᴠᴇʟᴏᴘᴇʀ   💻", url=f"https://telegram.me/DwayneJohnsonl")
-                            ]
-                        ]
-                    ),
-                    
-                    disable_web_page_preview=True)
             
-         
-@StreamBot.on_message(filters.regex("follow❤️"))
-async def follow_user(b,m):
-    try:
-       await b.send_message(chat_id=m.chat.id,text="HELLO",quote=True)
-    except Exception:
+            
+@StreamBot.on_message((filters.command("start") | filters.regex('start⚡️')) & filters.private )
+async def start(b, m):
+    if not await db.is_user_exist(m.from_user.id):
+        await db.add_user(m.from_user.id)
+        await b.send_message(
+            Var.BIN_CHANNEL,
+            f"#𝐍𝐞𝐰𝐔𝐬𝐞𝐫\n\n**᚛› 𝐍𝐚𝐦𝐞 - [{m.from_user.first_name}](tg://user?id={m.from_user.id})**"
+        )
+    if Var.UPDATES_CHANNEL != "None":
+        try:
+            user = await b.get_chat_member(Var.UPDATES_CHANNEL, m.chat.id)
+            if user.status == "kicked":
                 await b.send_message(
                     chat_id=m.chat.id,
-                    text="<b>HERE'S THE FOLLOW LINK</b>",
-                    
-                    reply_markup=InlineKeyboardMarkup(
+                    text="ꜱᴏʀʀʏ ʏᴏᴜ ᴀʀᴇ ʙᴀɴɴᴇᴅ ᴛᴏ ᴜꜱᴇ ᴍᴇ ᴘʟᴇᴀꜱᴇ ᴄᴏɴᴛᴀᴄᴛ ᴏᴡɴᴇʀ ꜰᴏʀ ᴍᴏʀᴇ ᴅᴇᴛᴀɪʟꜱ.",
+                    disable_web_page_preview=True
+                )
+                return
+        except UserNotParticipant:
+             await StreamBot.send_photo(
+                chat_id=m.chat.id,
+                photo="https://graph.org/file/a8095ab3c9202607e78ad.jpg",
+                caption="<b>⚠️  ɪɴ  ᴏʀᴅᴇʀ  ᴛᴏ  ᴜꜱᴇ  ᴍᴇ.  ʏᴏᴜ  ʜᴀᴠᴇ  ᴛᴏ  ᴊᴏɪɴ  ᴏᴜʀ  ᴜᴘᴅᴀᴛᴇs  ᴄʜᴀɴɴᴇʟ  ꜰɪʀsᴛ.</b>",
+                reply_markup=InlineKeyboardMarkup(
+                    [
                         [
-                            [
-                                InlineKeyboardButton("𝐔𝐏𝐃𝐀𝐓𝐄 𝐂𝐇𝐀𝐍𝐍𝐄𝐋", url=f"https://t.me/Cinemaa_Boxoffice")
-                            ]
+                            InlineKeyboardButton("⛔   ᴜᴘᴅᴀᴛᴇ  ᴄʜᴀɴɴᴇʟ   ⛔", url=f"https://telegram.me/{Var.UPDATES_CHANNEL}")
                         ]
-                    ),
+                    ]
+                ),
+                
+            )
+             return
+        except Exception:
+            await b.send_message(
+                chat_id=m.chat.id,
+                text="<b>ꜱᴏᴍᴇᴛʜɪɴɢ  ᴡᴇɴᴛ  ᴡʀᴏɴɢ  <a href='https://t.me/Cinemaa_boxoffice_support'>ᴄʟɪᴄᴋ  ʜᴇʀᴇ  ꜰᴏʀ  ꜱᴜᴘᴘᴏʀᴛ</a></b>",
+                
+                disable_web_page_preview=True)
+            return
+    await StreamBot.send_photo(
+        chat_id=m.chat.id,
+        photo ="https://telegra.ph/file/7e9722f41258b8f81fa3d.jpg",
+        caption =f'{m.from_user.mention(style="md")},\n\nɪ  ᴀᴍ  ᴀɴ  ᴀᴅᴠᴀɴᴄᴇ  ꜰɪʟᴇ  ᴛᴏ  ʟɪɴᴋ  ɢᴇɴᴇʀᴀᴛᴏʀ  ʙᴏᴛ.\n\nᴊᴜꜱᴛ  ꜱᴇɴᴅ  ᴍᴇ  ᴀɴʏ  ꜰɪʟᴇ  ᴀɴᴅ  ɢᴇᴛ  ᴀ  ᴅɪʀᴇᴄᴛ  ᴅᴏᴡɴʟᴏᴀᴅ  ʟɪɴᴋ  ᴀɴᴅ  ꜱᴛʀᴇᴀᴍᴀʙʟᴇ  ʟɪɴᴋ.',
+        reply_markup=buttonz)
+
+
+@StreamBot.on_message((filters.command("help") | filters.regex('help📚')) & filters.private )
+async def help_handler(bot, message):
+    if not await db.is_user_exist(message.from_user.id):
+        await db.add_user(message.from_user.id)
+        await bot.send_message(
+            Var.BIN_CHANNEL,
+            f"#𝐍𝐞𝐰𝐔𝐬𝐞𝐫\n\n**᚛› 𝐍𝐚𝐦𝐞 - [{m.from_user.first_name}](tg://user?id={m.from_user.id})**"
+        )
+    if Var.UPDATES_CHANNEL != "None":
+        try:
+            user = await bot.get_chat_member(Var.UPDATES_CHANNEL, message.chat.id)
+            if user.status == "kicked":
+                await bot.send_message(
+                    chat_id=message.chat.id,
+                    text="ꜱᴏʀʀʏ ʏᴏᴜ ᴀʀᴇ ʙᴀɴɴᴇᴅ ᴛᴏ ᴜꜱᴇ ᴍᴇ ᴘʟᴇᴀꜱᴇ ᴄᴏɴᴛᴀᴄᴛ ᴏᴡɴᴇʀ ꜰᴏʀ ᴍᴏʀᴇ ᴅᴇᴛᴀɪʟꜱ.",
                     
-                    disable_web_page_preview=True)
-        
+                    disable_web_page_preview=True
+                )
+                return
+        except UserNotParticipant:
+            await StreamBot.send_photo(
+                chat_id=message.chat.id,
+                photo="https://telegra.ph/file/345d71c4a18e9ec39888b.jpg",
+                caption="<b>⚠️  ᴘʟᴇᴀꜱᴇ  ꜰᴏʟʟᴏᴡ  ᴛʜɪꜱ  ʀᴜʟᴇ  ⚠️\n\n ɪɴ  ᴏʀᴅᴇʀ  ᴛᴏ  ᴜꜱᴇ  ᴍᴇ.\n\nʏᴏᴜ  ʜᴀᴠᴇ  ᴛᴏ  ᴊᴏɪɴ  ᴏᴜʀ  ᴏꜰꜰɪᴄɪᴀʟ  ᴄʜᴀɴɴᴇʟ  ꜰɪʀsᴛ.</b>",
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(" 🔥   𝙹𝙾𝙸𝙽  𝙾𝚄𝚁  𝙲𝙷𝙰𝙽𝙽𝙴𝙻   🔥 ", url=f"https://telegram.me/{Var.UPDATES_CHANNEL}")
+                        ]
+                    ]
+                ),
+                
+            )
+            return
+        except Exception:
+            await bot.send_message(
+                chat_id=message.chat.id,
+                text="ꜱᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ ᴄᴏɴᴛᴀᴄᴛ [ᴏᴡɴᴇʀ](https://telegram.me/DwayneJohnsonl).",
+                disable_web_page_preview=True)
+            return
+    await message.reply_text(
+        text="""<b>sᴏᴍᴇ ʜɪᴅᴅᴇɴ ᴅᴇᴛᴀɪʟs 😜</b>
 
-@StreamBot.on_message(filters.regex("DC"))
-async def start(bot, update):
-    text = START_TEXT.format(update.from_user.dc_id)
-    await update.reply_text(
-        text=text,
+<b>╭━━━━〔ꜰɪʟᴇ ᴛᴏ ʟɪɴᴋ ʙᴏᴛ〕</b>
+┃
+┣⪼<b>ɴᴀᴍᴇ : <a href='https://telegram.me/cinemaa_boxoffice'>𝗖𝗜𝗡𝗘𝗠𝗔𝗔_𝗕𝗢𝗫𝗢𝗙𝗙𝗜𝗖𝗘 𝗦𝗧𝗥𝗘𝗔𝗠 𝗕𝗢𝗧</a></b>
+┣⪼<b>ꜱᴇʀᴠᴇʀ : ʜᴇʀᴜᴋᴏ</b>
+┣⪼<b>ʟɪʙʀᴀʀʏ : ᴘʏʀᴏɢʀᴀᴍ</b>
+┣⪼<b>ᴜᴘᴅᴀᴛᴇꜱ : <a href='https://t.me/moviesworld738'>𝗖𝗜𝗡𝗘𝗠𝗔𝗔_𝗕𝗢𝗫𝗢𝗙𝗙𝗜𝗖𝗘</a></b>
+┣⪼<b>ꜱᴜᴘᴘᴏʀᴛ : <a href='https://t.me/Cinemaa_boxoffice_support'>ᴅᴇᴠᴇʟᴏᴘᴇʀ ꜱᴜᴘᴘᴏʀᴛ</a></b>
+┣⪼<b>ᴍᴏᴠɪᴇ ɢʀᴏᴜᴘ : <a href='https://t.me/All_movies_hub_4_u'>ʀᴇǫᴜᴇꜱᴛ ɢʀᴏᴜᴘ</a></b>
+┃
+<b>╰━━━━〔ᴘʟᴇᴀꜱᴇ sᴜᴘᴘᴏʀᴛ〕</b>""",
+        
         disable_web_page_preview=True,
-        quote=True
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton("👨‍💻  ᴏᴡɴᴇʀ", url="https://t.me/DwayneJohnsonl")],
+                [InlineKeyboardButton("💥 𝐏𝐑𝐀𝐕𝐈𝐓𝐄 𝐒𝐎𝐔𝐑𝐂𝐄 𝐂𝐎𝐃𝐄", url="https://t.me/DwayneJohnsonl")]
+            ]
+        )
     )
+# (c) NobiDeveloper
+from Adarsh.bot import StreamBot
+from Adarsh.vars import Var
+import logging
+logger = logging.getLogger(__name__)
+from Adarsh.bot.plugins.stream import MY_PASS
+from Adarsh.utils.human_readable import humanbytes
+from Adarsh.utils.database import Database
+from pyrogram import filters
+from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from pyrogram.errors import UserNotParticipant
+from Adarsh.utils.file_properties import get_name, get_hash, get_media_file_size
+db = Database(Var.DATABASE_URL, Var.name)
+from pyrogram.types import ReplyKeyboardMarkup
 
-    
-    
-@StreamBot.on_message(filters.command("list"))
-async def list(l, m):
-    LIST_MSG = " {},\nHere is a list of all my commands \n \n 1 . `start⚡️` \n 2. `help📚` \n 3.`follow❤️` \n 4. `ping📡` \n 5. `status📊` \n 6. `maintainers😎` "
-    await l.send_message(chat_id = m.chat.id,
-        text = LIST_MSG.format(m.from_user.mention(style="md"))
+if MY_PASS:
+            buttonz=ReplyKeyboardMarkup(
+            [
+                ["start⚡️","help📚","login🔑","DC"],
+                ["follow❤️","ping📡","status📊","owner😎"]
+                        
+            ],
+            resize_keyboard=True
+        )
+else:
+            buttonz=ReplyKeyboardMarkup(
+            [
+                ["start⚡️","help📚","DC"],
+                ["follow❤️","ping📡","status📊","owner😎"]
+                        
+            ],
+            resize_keyboard=True
+        )
+
+            
+            
+@StreamBot.on_message((filters.command("start") | filters.regex('start⚡️')) & filters.private )
+async def start(b, m):
+    if not await db.is_user_exist(m.from_user.id):
+        await db.add_user(m.from_user.id)
+        await b.send_message(
+            Var.BIN_CHANNEL,
+            f"#𝐍𝐞𝐰𝐔𝐬𝐞𝐫\n\n**᚛› 𝐍𝐚𝐦𝐞 - [{m.from_user.first_name}](tg://user?id={m.from_user.id})**"
+        )
+    if Var.UPDATES_CHANNEL != "None":
+        try:
+            user = await b.get_chat_member(Var.UPDATES_CHANNEL, m.chat.id)
+            if user.status == "kicked":
+                await b.send_message(
+                    chat_id=m.chat.id,
+                    text="ꜱᴏʀʀʏ ʏᴏᴜ ᴀʀᴇ ʙᴀɴɴᴇᴅ ᴛᴏ ᴜꜱᴇ ᴍᴇ ᴘʟᴇᴀꜱᴇ ᴄᴏɴᴛᴀᴄᴛ ᴏᴡɴᴇʀ ꜰᴏʀ ᴍᴏʀᴇ ᴅᴇᴛᴀɪʟꜱ.",
+                    disable_web_page_preview=True
+                )
+                return
+        except UserNotParticipant:
+             await StreamBot.send_photo(
+                chat_id=m.chat.id,
+                photo="https://graph.org/file/a8095ab3c9202607e78ad.jpg",
+                caption="<b>⚠️  ɪɴ  ᴏʀᴅᴇʀ  ᴛᴏ  ᴜꜱᴇ  ᴍᴇ.  ʏᴏᴜ  ʜᴀᴠᴇ  ᴛᴏ  ᴊᴏɪɴ  ᴏᴜʀ  ᴜᴘᴅᴀᴛᴇs  ᴄʜᴀɴɴᴇʟ  ꜰɪʀsᴛ.</b>",
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton("⛔   ᴜᴘᴅᴀᴛᴇ  ᴄʜᴀɴɴᴇʟ   ⛔", url=f"https://telegram.me/{Var.UPDATES_CHANNEL}")
+                        ]
+                    ]
+                ),
+                
+            )
+             return
+        except Exception:
+            await b.send_message(
+                chat_id=m.chat.id,
+                text="<b>ꜱᴏᴍᴇᴛʜɪɴɢ  ᴡᴇɴᴛ  ᴡʀᴏɴɢ  <a href='https://t.me/Cinemaa_boxoffice_support'>ᴄʟɪᴄᴋ  ʜᴇʀᴇ  ꜰᴏʀ  ꜱᴜᴘᴘᴏʀᴛ</a></b>",
+                
+                disable_web_page_preview=True)
+            return
+    await StreamBot.send_photo(
+        chat_id=m.chat.id,
+        photo ="https://telegra.ph/file/7e9722f41258b8f81fa3d.jpg",
+        caption =f'{m.from_user.mention(style="md")},\n\nɪ  ᴀᴍ  ᴀɴ  ᴀᴅᴠᴀɴᴄᴇ  ꜰɪʟᴇ  ᴛᴏ  ʟɪɴᴋ  ɢᴇɴᴇʀᴀᴛᴏʀ  ʙᴏᴛ.\n\nᴊᴜꜱᴛ  ꜱᴇɴᴅ  ᴍᴇ  ᴀɴʏ  ꜰɪʟᴇ  ᴀɴᴅ  ɢᴇᴛ  ᴀ  ᴅɪʀᴇᴄᴛ  ᴅᴏᴡɴʟᴏᴀᴅ  ʟɪɴᴋ  ᴀɴᴅ  ꜱᴛʀᴇᴀᴍᴀʙʟᴇ  ʟɪɴᴋ.',
+        reply_markup=buttonz)
+
+
+@StreamBot.on_message((filters.command("help") | filters.regex('help📚')) & filters.private )
+async def help_handler(bot, message):
+    if not await db.is_user_exist(message.from_user.id):
+        await db.add_user(message.from_user.id)
+        await bot.send_message(
+            Var.BIN_CHANNEL,
+            f"#𝐍𝐞𝐰𝐔𝐬𝐞𝐫\n\n**᚛› 𝐍𝐚𝐦𝐞 - [{m.from_user.first_name}](tg://user?id={m.from_user.id})**"
+        )
+    if Var.UPDATES_CHANNEL != "None":
+        try:
+            user = await bot.get_chat_member(Var.UPDATES_CHANNEL, message.chat.id)
+            if user.status == "kicked":
+                await bot.send_message(
+                    chat_id=message.chat.id,
+                    text="ꜱᴏʀʀʏ ʏᴏᴜ ᴀʀᴇ ʙᴀɴɴᴇᴅ ᴛᴏ ᴜꜱᴇ ᴍᴇ ᴘʟᴇᴀꜱᴇ ᴄᴏɴᴛᴀᴄᴛ ᴏᴡɴᴇʀ ꜰᴏʀ ᴍᴏʀᴇ ᴅᴇᴛᴀɪʟꜱ.",
+                    
+                    disable_web_page_preview=True
+                )
+                return
+        except UserNotParticipant:
+            await StreamBot.send_photo(
+                chat_id=message.chat.id,
+                photo="https://telegra.ph/file/345d71c4a18e9ec39888b.jpg",
+                caption="<b>⚠️  ᴘʟᴇᴀꜱᴇ  ꜰᴏʟʟᴏᴡ  ᴛʜɪꜱ  ʀᴜʟᴇ  ⚠️\n\n ɪɴ  ᴏʀᴅᴇʀ  ᴛᴏ  ᴜꜱᴇ  ᴍᴇ.\n\nʏᴏᴜ  ʜᴀᴠᴇ  ᴛᴏ  ᴊᴏɪɴ  ᴏᴜʀ  ᴏꜰꜰɪᴄɪᴀʟ  ᴄʜᴀɴɴᴇʟ  ꜰɪʀsᴛ.</b>",
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton(" 🔥   𝙹𝙾𝙸𝙽  𝙾𝚄𝚁  𝙲𝙷𝙰𝙽𝙽𝙴𝙻   🔥 ", url=f"https://telegram.me/{Var.UPDATES_CHANNEL}")
+                        ]
+                    ]
+                ),
+                
+            )
+            return
+        except Exception:
+            await bot.send_message(
+                chat_id=message.chat.id,
+                text="ꜱᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ ᴄᴏɴᴛᴀᴄᴛ [ᴏᴡɴᴇʀ](https://telegram.me/DwayneJohnsonl).",
+                disable_web_page_preview=True)
+            return
+    await message.reply_text(
+        text="""<b>sᴏᴍᴇ ʜɪᴅᴅᴇɴ ᴅᴇᴛᴀɪʟs 😜</b>
+
+<b>╭━━━━〔ꜰɪʟᴇ ᴛᴏ ʟɪɴᴋ ʙᴏᴛ〕</b>
+┃
+┣⪼<b>ɴᴀᴍᴇ : <a href='https://telegram.me/cinemaa_boxoffice'>𝗖𝗜𝗡𝗘𝗠𝗔𝗔_𝗕𝗢𝗫𝗢𝗙𝗙𝗜𝗖𝗘 𝗦𝗧𝗥𝗘𝗔𝗠 𝗕𝗢𝗧</a></b>
+┣⪼<b>ꜱᴇʀᴠᴇʀ : ʜᴇʀᴜᴋᴏ</b>
+┣⪼<b>ʟɪʙʀᴀʀʏ : ᴘʏʀᴏɢʀᴀᴍ</b>
+┣⪼<b>ᴜᴘᴅᴀᴛᴇꜱ : <a href='https://t.me/moviesworld738'>𝗖𝗜𝗡𝗘𝗠𝗔𝗔_𝗕𝗢𝗫𝗢𝗙𝗙𝗜𝗖𝗘</a></b>
+┣⪼<b>ꜱᴜᴘᴘᴏʀᴛ : <a href='https://t.me/Cinemaa_boxoffice_support'>ᴅᴇᴠᴇʟᴏᴘᴇʀ ꜱᴜᴘᴘᴏʀᴛ</a></b>
+┣⪼<b>ᴍᴏᴠɪᴇ ɢʀᴏᴜᴘ : <a href='https://t.me/All_movies_hub_4_u'>ʀᴇǫᴜᴇꜱᴛ ɢʀᴏᴜᴘ</a></b>
+┃
+<b>╰━━━━〔ᴘʟᴇᴀꜱᴇ sᴜᴘᴘᴏʀᴛ〕</b>""",
         
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup(
+            [
+                [InlineKeyboardButton("👨‍💻  ᴏᴡɴᴇʀ", url="https://t.me/DwayneJohnsonl")],
+                [InlineKeyboardButton("💥 𝐏𝐑𝐀𝐕𝐈𝐓𝐄 𝐒𝐎𝐔𝐑𝐂𝐄 𝐂𝐎𝐃𝐄", url="https://t.me/DwayneJohnsonl")]
+            ]
+        )
     )
     
-    
-@StreamBot.on_message(filters.regex("ping📡"))
-async def ping(b, m):
-    start_t = time.time()
-    ag = await m.reply_text("....")
-    end_t = time.time()
-    time_taken_s = (end_t - start_t) * 1000
-    await ag.edit(f"ᴘᴏɴɢ\n{time_taken_s:.3f} ms")
-    
-    
-    
-    
-@StreamBot.on_message(filters.private & filters.regex("status📊"))
-async def stats(bot, update):
-  currentTime = readable_time((time.time() - StartTime))
-  total, used, free = shutil.disk_usage('.')
-  total = get_readable_file_size(total)
-  used = get_readable_file_size(used)
-  free = get_readable_file_size(free)
-  sent = get_readable_file_size(psutil.net_io_counters().bytes_sent)
-  recv = get_readable_file_size(psutil.net_io_counters().bytes_recv)
-  cpuUsage = psutil.cpu_percent(interval=0.5)
-  memory = psutil.virtual_memory().percent
-  disk = psutil.disk_usage('/').percent
-  botstats = f'<b>⏳ ᴜᴘᴛɪᴍᴇ:</b> {currentTime}\n' \
-            f'<b>♻️ ᴛᴏᴛᴀʟ:</b> {total}\n' \
-            f'<b>🆓 ꜰʀᴇᴇ: </b> {free}\n' \
-            f'<b>🉐 ᴏᴄᴄᴜᴘɪᴇᴅ:</b> {used} \n\n\n' \
-            f'<b>📊  ᴅᴀᴛᴀ  ᴜꜱᴀɢᴇꜱ  📊</b>\n\n<b>☣️  ᴄᴘᴜ:</b> {cpuUsage}% \n' \
-            f'<b>☢️  ʀᴀᴍ:</b> {memory}% \n' \
-            f'<b>☣️  ᴅɪꜱᴋ:</b> {disk}% \n' \
-            f'<b>📤  ᴜᴘʟᴏᴀᴅ:</b> {sent}\n' \
-            f'<b>📥  ᴅᴏᴡɴ:</b> {recv}'
-  await update.reply_text(botstats)
