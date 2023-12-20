@@ -67,7 +67,7 @@ async def private_receive_handler(c: Client, m: Message):
             if user.status == "kicked":
                 await c.send_message(
                     chat_id=m.chat.id,
-                    text="You are banned!\n\n  **Contact Developer [Nobita](https://telegram.me/NobiDeveloperSupport) he will help you.**",
+                    text="You are banned!\n\n  **Contact Developer [🦋🥀𝗗ᾰ𝐫𝙺𝗗𝗲̀νⲓＬ🥀🦋](https://t.me/Cinemaa_boxoffice_support) he will help you.**",
                     
                     disable_web_page_preview=True
                 )
