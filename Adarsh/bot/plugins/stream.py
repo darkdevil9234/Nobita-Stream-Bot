@@ -1,4 +1,4 @@
-#(c) Adarsh-Goel
+#(c) NobiDeveloper
 import os
 import asyncio
 from asyncio import TimeoutError
@@ -61,14 +61,14 @@ async def private_receive_handler(c: Client, m: Message):
             Var.BIN_CHANNEL,
             f"New User Joined! : \n\n Name : [{m.from_user.first_name}](tg://user?id={m.from_user.id}) Started Your Bot!!"
         )
-            if Var.UPDATES_CHANNEL != "None":
+    if Var.UPDATES_CHANNEL != "None":
         try:
             user = await c.get_chat_member(Var.UPDATES_CHANNEL, m.chat.id)
             if user.status == "kicked":
                 await c.send_message(
                     chat_id=m.chat.id,
                     text="You are banned!\n\n  **Contact Developer [🦋🥀𝗗ᾰ𝐫𝙺𝗗𝗲̀νⲓＬ🥀🦋](https://t.me/Cinemaa_boxoffice_support) he will help you.**",
-
+                    
                     disable_web_page_preview=True
                 )
                 return 
@@ -83,7 +83,7 @@ async def private_receive_handler(c: Client, m: Message):
                         ]
                     ]
                 ),
-
+                
             )
             return
         except Exception as e:
@@ -91,7 +91,7 @@ async def private_receive_handler(c: Client, m: Message):
             await c.send_message(
                 chat_id=m.chat.id,
                 text="**sᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ. ᴄᴏɴᴛᴀᴄᴛ ᴍʏ [ʙᴏss](https://telegram.me/Cinemaa_Boxoffice)**",
-
+                
                 disable_web_page_preview=True)
             return
     try:
@@ -99,15 +99,26 @@ async def private_receive_handler(c: Client, m: Message):
         stream_link = f"{Var.URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
         online_link = f"{Var.URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
        
-        msg_text ="""<i><u>𝗬𝗼𝘂𝗿 𝗟𝗶𝗻𝗸 𝗚𝗲𝗻𝗲𝗿𝗮𝘁𝗲𝗱 !</u></i>\n\n<b>📂 Fɪʟᴇ ɴᴀᴍᴇ :</b> <i>{}</i>\n\n<b>📦 Fɪʟᴇ ꜱɪᴢᴇ :</b> <i>{}</i>\n\n<b>📥 Dᴏᴡɴʟᴏᴀᴅ :</b> <i>{}</i>\n\n<b> 🖥WATCH  :</b> <i>{}</i>\n\n<b>🚸 Nᴏᴛᴇ : LINK WON'T EXPIRE TILL I DELETE</b>"""
+        msg_text ="""
+<b>ʏᴏᴜʀ ʟɪɴᴋ ɪs ɢᴇɴᴇʀᴀᴛᴇᴅ...⚡</b>
 
-        await log_msg.reply_text(text=f"**RᴇQᴜᴇꜱᴛᴇᴅ ʙʏ :** [{m.from_user.first_name}](tg://user?id={m.from_user.id})\n**Uꜱᴇʀ ɪᴅ :** `{m.from_user.id}`\n**Stream ʟɪɴᴋ :** {stream_link}", disable_web_page_preview=True,  quote=True)
+<b>📧 ꜰɪʟᴇ ɴᴀᴍᴇ :- </b> <i>{}</i>
+
+<b>📦 ꜰɪʟᴇ sɪᴢᴇ :- </b> <i>{}</i>
+
+<b>⚠️ ᴛʜɪꜱ ʟɪɴᴋ ᴡɪʟʟ ᴇxᴘɪʀᴇ ᴀꜰᴛᴇʀ 𝟸𝟺 ʜᴏᴜʀꜱ</b>
+
+<b>❇️  ᴍᴀɪɴᴛᴀɪɴᴇᴅ ʙʏ : @cinemaa_boxoffice</b>"""
+
+        await log_msg.reply_text(text=f"**ʀᴇǫᴜᴇꜱᴛᴇᴅ ʙʏ :** [{m.from_user.first_name}](tg://user?id={m.from_user.id})\n**Uꜱᴇʀ ɪᴅ :** `{m.from_user.id}`\n**Stream ʟɪɴᴋ :** {stream_link}", disable_web_page_preview=True,  quote=True)
         await m.reply_text(
             text=msg_text.format(get_name(log_msg), humanbytes(get_media_file_size(m)), online_link, stream_link),
             quote=True,
             disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("◉ sᴛʀᴇᴀᴍ ◉", url=stream_link), #Stream Link
-                                                InlineKeyboardButton('● ᴅᴏᴡɴʟᴏᴀᴅ ●', url=online_link)]]) #Download Link
+            reply_markup=InlineKeyboardMarkup([
+                [InlineKeyboardButton("🖥️  ꜱᴛʀᴇᴀᴍ  🖥️", url=stream_link),
+                 InlineKeyboardButton('📥  ᴅᴏᴡɴʟᴏᴀᴅ  📥', url=online_link)],
+                [InlineKeyboardButton('🎪  𝗨𝗣𝗗𝗔𝗧𝗘 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 🎪', url='https://t.me/moviesworld738')]])
         )
     except FloodWait as e:
         print(f"Sleeping for {str(e.x)}s")
@@ -117,7 +128,7 @@ async def private_receive_handler(c: Client, m: Message):
 
 @StreamBot.on_message(filters.channel & ~filters.group & (filters.document | filters.video | filters.photo)  & ~filters.forwarded, group=-1)
 async def channel_receive_handler(bot, broadcast):
-        if MY_PASS:
+    if MY_PASS:
         check_pass = await pass_db.get_user_pass(broadcast.chat.id)
         if check_pass == None:
             await broadcast.reply_text("Login first using /login cmd \n don\'t know the pass? request it from developer!")
@@ -125,7 +136,7 @@ async def channel_receive_handler(bot, broadcast):
         if check_pass != MY_PASS:
             await broadcast.reply_text("Wrong password, login again")
             await pass_db.delete_user(broadcast.chat.id)
-
+            
             return
     if int(broadcast.chat.id) in Var.BANNED_CHANNELS:
         await bot.leave_chat(broadcast.chat.id)
@@ -136,16 +147,18 @@ async def channel_receive_handler(bot, broadcast):
         stream_link = f"{Var.URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
         online_link = f"{Var.URL}{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
         await log_msg.reply_text(
-            text=f"**Channel Name:** `{broadcast.chat.title}`\n**CHANNEL ID:** `{broadcast.chat.id}`\n**Rᴇǫᴜᴇsᴛ ᴜʀʟ:** {stream_link}",
+            text=f"**Channel Name:** `{broadcast.chat.title}`\n**CHANNEL ID:** `{broadcast.chat.id}`\n**ʀᴇǫᴜᴇꜱᴛ ᴜʀʟ:** {stream_link}",
             quote=True
         )
         await bot.edit_message_reply_markup(
             chat_id=broadcast.chat.id,
             message_id=broadcast.id,
+            disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup(
                 [
-                    [InlineKeyboardButton("◉ sᴛʀᴇᴀᴍ ◉", url=stream_link),
-                     InlineKeyboardButton('● ᴅᴏᴡɴʟᴏᴀᴅ ●', url=online_link)] 
+                    [InlineKeyboardButton("🖥️  ꜱᴛʀᴇᴀᴍ  🖥️", url=stream_link),
+                     InlineKeyboardButton('📥  ᴅᴏᴡɴʟᴏᴀᴅ  📥', url=online_link)],
+                    [InlineKeyboardButton('🎪  𝗨𝗣𝗗𝗔𝗧𝗘 𝗖𝗛𝗔𝗡𝗡𝗘𝗟 🎪', url='https://t.me/moviesworld738')]
                 ]
             )
         )
@@ -158,4 +171,3 @@ async def channel_receive_handler(bot, broadcast):
     except Exception as e:
         await bot.send_message(chat_id=Var.BIN_CHANNEL, text=f"**#ERROR_TRACKEBACK:** `{e}`", disable_web_page_preview=True)
         print(f"Cᴀɴ'ᴛ Eᴅɪᴛ Bʀᴏᴀᴅᴄᴀsᴛ Mᴇssᴀɢᴇ!\nEʀʀᴏʀ:  **Give me edit permission in updates and bin Channel!{e}**")
-        
