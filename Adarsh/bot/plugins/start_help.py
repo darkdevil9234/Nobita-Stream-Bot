@@ -126,20 +126,20 @@ async def help_handler(bot, message):
 
 <b>╭━━━━〔ꜰɪʟᴇ ᴛᴏ ʟɪɴᴋ ʙᴏᴛ〕</b>
 ┃
-┣⪼<b>ɴᴀᴍᴇ : <a href='https://telegram.me/cinemaa_boxoffice'>𝐂𝐢𝐧𝐞𝐦𝐚𝐚_𝐛𝐨𝐱𝐨𝐟𝐟𝐢𝐜𝐞 sᴛʀᴇᴀᴍ ʙᴏᴛ</a></b>
+┣⪼<b>ɴᴀᴍᴇ : <a href='https://telegram.me/cinemaa_boxoffice'>𝗖𝗜𝗡𝗘𝗠𝗔𝗔_𝗕𝗢𝗫𝗢𝗙𝗙𝗜𝗖𝗘 𝗦𝗧𝗥𝗘𝗔𝗠 𝗕𝗢𝗧</a></b>
 ┣⪼<b>ꜱᴇʀᴠᴇʀ : ʜᴇʀᴜᴋᴏ</b>
 ┣⪼<b>ʟɪʙʀᴀʀʏ : ᴘʏʀᴏɢʀᴀᴍ</b>
-┣⪼<b>ᴜᴘᴅᴀᴛᴇꜱ : <a href='https://t.me/moviesworld738'>ᴍᴏᴠɪᴇᴠɪʟʟᴀ</a></b>
+┣⪼<b>ᴜᴘᴅᴀᴛᴇꜱ : <a href='https://t.me/moviesworld738'>𝗖𝗜𝗡𝗘𝗠𝗔𝗔_𝗕𝗢𝗫𝗢𝗙𝗙𝗜𝗖𝗘</a></b>
 ┣⪼<b>ꜱᴜᴘᴘᴏʀᴛ : <a href='https://t.me/Cinemaa_boxoffice_support'>ᴅᴇᴠᴇʟᴏᴘᴇʀ ꜱᴜᴘᴘᴏʀᴛ</a></b>
-┣⪼<b>ᴍᴏᴠɪᴇ ɢʀᴏᴜᴘ : <a href='https://telegram.me/AllRequestGroups'>ʀᴇǫᴜᴇꜱᴛ ɢʀᴏᴜᴘ</a></b>
+┣⪼<b>ᴍᴏᴠɪᴇ ɢʀᴏᴜᴘ : <a href='https://t.me/All_movies_hub_4_u'>ʀᴇǫᴜᴇꜱᴛ ɢʀᴏᴜᴘ</a></b>
 ┃
 <b>╰━━━━〔ᴘʟᴇᴀꜱᴇ sᴜᴘᴘᴏʀᴛ〕</b>""",
         
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup(
             [
-                [InlineKeyboardButton("👨‍💻  ᴏᴡɴᴇʀ", url="https://t.me/All_movies_hub_4_u")],
-                [InlineKeyboardButton("💥  ꜱᴏᴜʀᴄᴇ  ᴄᴏᴅᴇ 𝗣𝗿𝗶𝘃𝗮𝘁𝗲", url="https://github.com")]
+                [InlineKeyboardButton("👨‍💻  ᴏᴡɴᴇʀ", url="https://t.me/DwayneJohnsonl")],
+                [InlineKeyboardButton("💥 𝐏𝐑𝐀𝐕𝐈𝐓𝐄 𝐒𝐎𝐔𝐑𝐂𝐄 𝐂𝐎𝐃𝐄", url="https://t.me/DwayneJohnsonl")]
             ]
         )
     )
