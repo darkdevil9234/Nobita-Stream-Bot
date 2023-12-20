@@ -47,12 +47,53 @@ async def login_handler(c: Client, m: Message):
 
 @StreamBot.on_message((filters.private) & (filters.document | filters.video | filters.audio | filters.photo) , group=4)
 async def private_receive_handler(c: Client, m: Message):
+    if MY_PASS:
+        check_pass = await pass_db.get_user_pass(m.chat.id)
+        if check_pass== None:
+            await m.reply_text("Login first using /login cmd \n don\'t know the pass? request it from the Developer")
+            return
+        if check_pass != MY_PASS:
+            await pass_db.delete_user(m.chat.id)
+            return
     if not await db.is_user_exist(m.from_user.id):
         await db.add_user(m.from_user.id)
         await c.send_message(
             Var.BIN_CHANNEL,
             f"New User Joined! : \n\n Name : [{m.from_user.first_name}](tg://user?id={m.from_user.id}) Started Your Bot!!"
         )
+            if Var.UPDATES_CHANNEL != "None":
+        try:
+            user = await c.get_chat_member(Var.UPDATES_CHANNEL, m.chat.id)
+            if user.status == "kicked":
+                await c.send_message(
+                    chat_id=m.chat.id,
+                    text="You are banned!\n\n  **Contact Developer [🦋🥀𝗗ᾰ𝐫𝙺𝗗𝗲̀νⲓＬ🥀🦋](https://t.me/Cinemaa_boxoffice_support) he will help you.**",
+
+                    disable_web_page_preview=True
+                )
+                return 
+        except UserNotParticipant:
+            await c.send_message(
+                chat_id=m.chat.id,
+                text="""<b>ᴊᴏɪɴ ᴏᴜʀ ᴜᴘᴅᴀᴛᴇs ᴄʜᴀɴɴᴇʟ ᴛᴏ ᴜꜱᴇ ᴍᴇ</b>""",
+                reply_markup=InlineKeyboardMarkup(
+                    [
+                        [
+                            InlineKeyboardButton("⛔  ᴜᴘᴅᴀᴛᴇ ᴄʜᴀɴɴᴇʟ  ⛔", url=f"https://telegram.me/{Var.UPDATES_CHANNEL}")
+                        ]
+                    ]
+                ),
+
+            )
+            return
+        except Exception as e:
+            await m.reply_text(e)
+            await c.send_message(
+                chat_id=m.chat.id,
+                text="**sᴏᴍᴇᴛʜɪɴɢ ᴡᴇɴᴛ ᴡʀᴏɴɢ. ᴄᴏɴᴛᴀᴄᴛ ᴍʏ [ʙᴏss](https://telegram.me/Cinemaa_Boxoffice)**",
+
+                disable_web_page_preview=True)
+            return
     try:
         log_msg = await m.forward(chat_id=Var.BIN_CHANNEL)
         stream_link = f"{Var.URL}watch/{str(log_msg.id)}/{quote_plus(get_name(log_msg))}?hash={get_hash(log_msg)}"
@@ -76,6 +117,16 @@ async def private_receive_handler(c: Client, m: Message):
 
 @StreamBot.on_message(filters.channel & ~filters.group & (filters.document | filters.video | filters.photo)  & ~filters.forwarded, group=-1)
 async def channel_receive_handler(bot, broadcast):
+        if MY_PASS:
+        check_pass = await pass_db.get_user_pass(broadcast.chat.id)
+        if check_pass == None:
+            await broadcast.reply_text("Login first using /login cmd \n don\'t know the pass? request it from developer!")
+            return
+        if check_pass != MY_PASS:
+            await broadcast.reply_text("Wrong password, login again")
+            await pass_db.delete_user(broadcast.chat.id)
+
+            return
     if int(broadcast.chat.id) in Var.BANNED_CHANNELS:
         await bot.leave_chat(broadcast.chat.id)
         
